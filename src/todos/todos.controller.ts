@@ -7,6 +7,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { validate } from 'class-validator';
 import { CreateTodoDto, UpdateTodoDto } from './todos.dto';
 import { TodosService } from './todos.service';
 import { Todo } from './type';
