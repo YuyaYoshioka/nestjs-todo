@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  db:
+    image: mysql:8.0
+    platform: linux/amd64
+    env_file:
+      ./environments/db.env
+    ports:
+      - 3306:3306
+    volumes:
+      - nestjs-todo-db:/var/lib/mysql
+
+volumes:
+  nestjs-todo-db:
