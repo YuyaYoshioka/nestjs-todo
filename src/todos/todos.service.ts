@@ -1,30 +1,61 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateTodoDto } from './todos.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateTodoDto, UpdateTodoDto } from './todos.dto';
 import { Todo } from './type';
 
 @Injectable()
 export class TodosService {
-  private todos: Todo[] = [];
+  constructor(private prisma: PrismaService) {}
 
-  findAll(): Todo[] {
-    return this.todos;
+  async findAll(): Promise<Todo[]> {
+    return await this.prisma.todo.findMany({
+      select: {
+        id: true,
+        title: true,
+        text: true,
+        isCompleted: true,
+      },
+    });
   }
 
-  findBy(id: string): Todo {
-    return this.todos.find((todo) => todo.id === id);
+  async findBy(id: number): Promise<Todo> {
+    return await this.prisma.todo.findFirst({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        title: true,
+        text: true,
+        isCompleted: true,
+      },
+    });
   }
 
-  create(todo: Todo) {
-    this.todos.push(todo);
+  async create(todo: CreateTodoDto) {
+    await this.prisma.todo.create({
+      data: {
+        ...todo,
+      },
+    });
   }
 
-  update(id: string, todo: UpdateTodoDto) {
-    const targetTodoIndex = this.todos.findIndex((todo) => todo.id === id);
-    this.todos[targetTodoIndex] = { ...todo, id };
+  async update(id: number, todo: UpdateTodoDto) {
+    await this.prisma.todo.update({
+      where: {
+        id: id,
+      },
+      data: {
+        ...todo,
+      },
+    });
   }
 
-  destroy(id: string) {
-    const newTodos = this.todos.filter((todo) => todo.id !== id);
-    this.todos = newTodos;
+  async destroy(id: number) {
+    await this.prisma.todo.delete({
+      where: {
+        id: id,
+      },
+    });
   }
 }

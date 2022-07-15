@@ -4,25 +4,24 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
 } from '@nestjs/common';
-import { validate } from 'class-validator';
 import { CreateTodoDto, UpdateTodoDto } from './todos.dto';
 import { TodosService } from './todos.service';
-import { Todo } from './type';
 
 @Controller('todos')
 export class TodosController {
-  constructor(private todosService: TodosService) {}
+  constructor(private readonly todosService: TodosService) {}
 
   @Get()
-  getTodos(): Todo[] {
+  getTodos() {
     return this.todosService.findAll();
   }
 
   @Get(':id')
-  getTodo(@Param('id') id: string): Todo {
+  getTodo(@Param('id', ParseIntPipe) id: number) {
     return this.todosService.findBy(id);
   }
 
@@ -32,12 +31,12 @@ export class TodosController {
   }
 
   @Put(':id')
-  putTodo(@Param('id') id: string, @Body() todo: UpdateTodoDto) {
+  putTodo(@Param('id', ParseIntPipe) id: number, @Body() todo: UpdateTodoDto) {
     this.todosService.update(id, todo);
   }
 
   @Delete(':id')
-  deleteTodos(@Param('id') id: string) {
+  deleteTodos(@Param('id', ParseIntPipe) id: number) {
     this.todosService.destroy(id);
   }
 }

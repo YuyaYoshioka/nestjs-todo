@@ -3,9 +3,6 @@ import { Todo } from './type';
 
 export class CreateTodoDto {
   @IsString()
-  id: Todo['id'];
-
-  @IsString()
   @Length(1, 20)
   title: Todo['title'];
 
